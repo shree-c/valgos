@@ -27,22 +27,21 @@ function createBars(barValues: number[], toBeHighlighted: number[]): any[] {
 
 interface argObj {
   numberOfBars: number,
-  delay: number
   algorithm: Algorithms,
   eventBoy: EventTarget
   sorter: Sorting
 }
 
-
-function SortContainer({ numberOfBars, delay, eventBoy, algorithm, sorter }: argObj) {
+function SortContainer({ numberOfBars, eventBoy, algorithm, sorter }: argObj) {
   const [arrayValues, setArrayValues] = useState<number[]>([])
   const [highlightArray, setHighlightArray] = useState<number[]>([])
+  const [delay, setDelay] = useState<number>(10)
   const handleReset = () => {
     sorter.stopSorting()
     setArrayValues([...returnRandomIntegerArray([], numberOfBars)])
   }
   const handleSorting = () => {
-    sorter.sortFuns[algorithm](arrayValues, delay, setArrayValues, setHighlightArray).catch(() => {
+    sorter.sortFuns[algorithm](arrayValues, setArrayValues, setHighlightArray).catch(() => {
       alert("A sort function is running already")
     })
   }
@@ -60,10 +59,26 @@ function SortContainer({ numberOfBars, delay, eventBoy, algorithm, sorter }: arg
       eventBoy.removeEventListener('resetBars', handleReset)
     }
   }, [arrayValues, algorithm])
+
   useEffect(() => {
     setArrayValues([...returnRandomIntegerArray(arrayValues, numberOfBars)])
   }, [numberOfBars])
-  return createElement('div', { className: 'barCon' }, ...createBars(arrayValues, highlightArray))
+
+  useEffect(() => {
+    sorter.setDelay(delay)
+  }, [delay])
+  const bars = createElement('div', { className: 'barCon' }, ...createBars(arrayValues, highlightArray))
+  return (
+    <div>
+      {bars}
+      <label>
+        Delay:
+        <input type="number" min={0} max={1000} defaultValue={delay} onChange={(e) => {
+          setDelay(parseInt(e.target.value ? e.target.value : '0'))
+        }} />
+      </label>
+    </div>
+  )
 }
 
 export default SortContainer

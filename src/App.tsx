@@ -10,21 +10,19 @@ const resetBars = new Event('resetBars')
 
 function App() {
   const [algorithm, setAlgorithm] = useState<Algorithms>('b');
-  const [delay, setDelay] = useState<number>(10);
   const [numberOfBars, setNumberOfBars] = useState<number>(10)
   const eventBoy = new EventTarget()
+  const sorter = new Sorting()
   const sort = () => {
     eventBoy.dispatchEvent(startSorting)
   }
   const refresh = () => {
-    eventBoy.dispatchEvent(stopSorting)
+    sorter.stopSorting()
     eventBoy.dispatchEvent(resetBars)
   }
-  const sorter = new Sorting()
-
   return (
     <div className='app'>
-      <SortContainer sorter={sorter} numberOfBars={numberOfBars} delay={delay} algorithm={algorithm} eventBoy={eventBoy} />
+      <SortContainer sorter={sorter} numberOfBars={numberOfBars} algorithm={algorithm} eventBoy={eventBoy} />
       <button onClick={sort}>Sort</button>
       <button onClick={refresh}>Refresh</button>
       <button onClick={() => setNumberOfBars(numberOfBars + 1)}>+</button>
@@ -34,10 +32,8 @@ function App() {
         <option value="i"> insersionSort </option>
         <option value="q"> qsort </option>
       </select>
-      <input defaultValue={delay} type="range" min={0} max={1000} onChange={(e) => setDelay(parseInt(e.target.value))} />
-      <div>delay: {delay}</div>
       <div> {numberOfBars}</div>
-      <button onClick={() => { eventBoy.dispatchEvent(stopSorting) }}> Stop</button>
+      <button onClick={() => { sorter.stopSorting() }}> Stop</button>
     </div>
   )
 }
