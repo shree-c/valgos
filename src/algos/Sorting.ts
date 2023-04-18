@@ -12,7 +12,6 @@ async function wait(delay: number): Promise<void> {
 async function qs(toBeSroted: number[], lo: number, hi: number, stateUpdater: React.Dispatch<SetStateAction<number[]>>, wait: (delay: number) => Promise<void>, delay: number, setHighlightArray: React.Dispatch<SetStateAction<number[]>>): Promise<void> {
   if (lo >= hi || lo < 0)
     return
-
   const pivotIndex = await partition(toBeSroted, lo, hi, stateUpdater, delay, wait, setHighlightArray)
   await qs(toBeSroted, lo, pivotIndex - 1, stateUpdater, wait, delay, setHighlightArray)
   await qs(toBeSroted, pivotIndex + 1, hi, stateUpdater, wait, delay, setHighlightArray)
@@ -40,14 +39,14 @@ async function partition(toBePartitioned: number[], lo: number, hi: number, stat
   return i
 }
 
+
+
 async function delayedBubbleSort(this: Sorting, valuesArray: number[], delay: number, stateUpdater: React.Dispatch<SetStateAction<number[]>>, setHighlightArray: React.Dispatch<SetStateAction<number[]>>): Promise<void> {
   if (this._running)
     return
   this._running = true
   let swapped = true;
-  while (swapped) {
-    if (!this._running)
-      break;
+  let timerId = setTimeout(async function findTheLargest(context) {
     swapped = false;
     for (let i = 1; i < valuesArray.length; i++) {
       if (valuesArray[i - 1] > valuesArray[i]) {
@@ -59,8 +58,10 @@ async function delayedBubbleSort(this: Sorting, valuesArray: number[], delay: nu
         setHighlightArray([])
       }
     }
-  }
-  this._running = false;
+    if (swapped && context._running) {
+      timerId = setTimeout(findTheLargest, 0, context)
+    }
+  }, 0, this)
 }
 
 async function delayedInsersionSort(valuesArray: number[], delay: number, stateUpdater: React.Dispatch<SetStateAction<number[]>>, setHighlightArray: React.Dispatch<SetStateAction<number[]>>): Promise<void> {

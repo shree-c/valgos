@@ -30,13 +30,13 @@ interface argObj {
   delay: number
   algorithm: Algorithms,
   eventBoy: EventTarget
+  sorter: Sorting
 }
 
 
-function SortContainer({ numberOfBars, delay, eventBoy, algorithm }: argObj) {
+function SortContainer({ numberOfBars, delay, eventBoy, algorithm, sorter }: argObj) {
   const [arrayValues, setArrayValues] = useState<number[]>([])
   const [highlightArray, setHighlightArray] = useState<number[]>([])
-  const sorter = new Sorting()
   const handleReset = () => {
     sorter.stopSorting()
     setArrayValues([...returnRandomIntegerArray([], numberOfBars)])
@@ -48,11 +48,15 @@ function SortContainer({ numberOfBars, delay, eventBoy, algorithm }: argObj) {
   }
   useEffect(() => {
     eventBoy.addEventListener('startSorting', handleSorting)
-    eventBoy.addEventListener('stopSorting', sorter.stopSorting)
+    eventBoy.addEventListener('stopSorting', () => {
+      sorter.stopSorting.call(sorter)
+    })
     eventBoy.addEventListener('resetBars', handleReset)
     return () => {
       eventBoy.removeEventListener('startSorting', handleSorting)
-      eventBoy.removeEventListener('stopSorting', sorter.stopSorting)
+      eventBoy.removeEventListener('stopSorting', () => {
+        sorter.stopSorting.call(sorter)
+      })
       eventBoy.removeEventListener('resetBars', handleReset)
     }
   }, [arrayValues, algorithm])

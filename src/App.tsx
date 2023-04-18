@@ -2,6 +2,7 @@ import SortContainer from './components/SortContainer'
 import { useState } from 'react'
 import { Algorithms } from './algos/Sorting';
 import './App.css'
+import { Sorting } from './algos/Sorting';
 
 const stopSorting = new Event('stopSorting')
 const startSorting = new Event('startSorting')
@@ -19,10 +20,11 @@ function App() {
     eventBoy.dispatchEvent(stopSorting)
     eventBoy.dispatchEvent(resetBars)
   }
+  const sorter = new Sorting()
 
   return (
     <div className='app'>
-      <SortContainer numberOfBars={numberOfBars} delay={delay} algorithm={algorithm} eventBoy={eventBoy} />
+      <SortContainer sorter={sorter} numberOfBars={numberOfBars} delay={delay} algorithm={algorithm} eventBoy={eventBoy} />
       <button onClick={sort}>Sort</button>
       <button onClick={refresh}>Refresh</button>
       <button onClick={() => setNumberOfBars(numberOfBars + 1)}>+</button>
