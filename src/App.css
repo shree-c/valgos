@@ -1,0 +1,26 @@
+body {
+  background: #525252;
+  color: #BADEFC;
+}
+
+.bar {
+  background: #0AFFED;
+  width: 10px;
+  margin: 0 3px;
+}
+
+.highlight {
+  background: red;
+}
+
+.barCon {
+  display: flex;
+  border: 1px solid pink;
+  min-height: 300px;
+  align-items: flex-end;
+  width: fit-content;
+}
+
+.app {
+  margin: 20px;
+}
